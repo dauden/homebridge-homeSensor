@@ -1,5 +1,6 @@
 const sensor = require('node-dht-sensor');
-
+const SENOR_TYPE = 22;
+const GPIO_PIN = 17
 let Service, Characteristic;
 
 module.exports = function(homebridge) {
