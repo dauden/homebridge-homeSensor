@@ -36,8 +36,10 @@ HomeSenor.prototype.updateState = function (state) {
   }
 
   this.waitingResponse = true;
+  console.log('debug:', this.sensorType, this.gpioPin);
   this.lastValue = sensor.read(this.sensorType, this.gpioPin).then(
     function (resp) {
+      console.log('debug resp', resp);
       for (let item in this.characteristics) {
         let charac = resp[item].replace(/\s/g, '');
         if(resp.hasOwnProperty(charac)){
@@ -48,6 +50,7 @@ HomeSenor.prototype.updateState = function (state) {
           this.log("HomeSenor: " + charac + " has no information");
       }
       this.waitingResponse = false;
+      return resp;
     },
     function (err) {
         this.waitingResponse = false;
