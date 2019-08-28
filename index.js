@@ -24,6 +24,7 @@ class HomeSenor {
   }
 
   startReading() {
+    let sefl = this;
     const callback = () => {
       setTimeout(() => this.getReading(callback), 5000);
     };
@@ -32,13 +33,14 @@ class HomeSenor {
   }
 
   getReading(callback) {
+    let sefl = this;
     sensor.read(this.sensorType, this.gpioPin, (err, temperature) => {
       callback();
       if (err) {
         console.error(err); // eslint-disable-line no-console
         return;
       }
-      this.log("currentTemperature:", temperature)
+      sefl.log("currentTemperature:", temperature)
       this.currentTemperature = temperature;
       this.temperatureService.setCharacteristic(Characteristic.CurrentTemperature, this.currentTemperature);
     });
