@@ -42,7 +42,7 @@ class HomeSenor {
       }
       sefl.log("currentTemperature:", temperature)
       this.currentTemperature = temperature;
-      this.temperatureService.setCharacteristic(Characteristic.CurrentTemperature, this.currentTemperature);
+      this.temperatureService.setCharacteristic(Characteristic.CurrentTemperature, temperature);
     });
   }
 
