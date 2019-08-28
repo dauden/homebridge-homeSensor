@@ -5,10 +5,10 @@ let Service, Characteristic;
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
-  homebridge.registerAccessory('homebridge-temperature-sensor', 'Temperature Sensor', Sensor);
+  homebridge.registerAccessory('homebridge-temperature-sensor', 'HomeSenor', HomeSenor);
 };
 
-class Sensor {
+class HomeSenor {
   constructor(log, config) {
     this.log = log;
     this.name = config.name;
