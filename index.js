@@ -40,7 +40,7 @@ class HomeSenor {
     sensor.read(this.sensorType, this.gpioPin).then(
       resp => {
         callback();
-        sefl.log("currentValue:", resp[this.valueProperty]);
+        sefl.log("currentValue:", resp);
         this.currentValue = resp[this.valueProperty];
         this.mservice.setCharacteristic(this.characteristics, this.currentValue);
       },
@@ -103,13 +103,9 @@ class HomeSenor {
     this.mservice
       .getCharacteristic(this.characteristics)
       .on('get', (callback) => {
-        callback(null, this.currentValue);
+        callback(null, {this.currentValue);
       });
-    this.mservice
-      .getCharacteristic(this.characteristics)
-      .on('set', (callback) => {
-        callback(null, this.currentValue);
-      });
+
     this.mservice
       .getCharacteristic(Characteristic.Name)
       .on('get', callback => {
