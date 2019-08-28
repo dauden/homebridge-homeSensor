@@ -103,7 +103,7 @@ class HomeSenor {
     this.mservice
       .getCharacteristic(this.characteristics)
       .on('get', (callback) => {
-        callback(null, {this.currentValue);
+        callback(null, this.currentValue);
       });
 
     this.mservice
