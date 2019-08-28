@@ -1,5 +1,5 @@
 {
-  "name": "homebridge-homeSensor",
+  "name": "homebridge-HomeSensor",
   "version": "0.0.1",
   "description": "Sample Platform plugin for homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
@@ -10,14 +10,12 @@
     "type": "git",
     "url": "git@github.com:dauden/homebridge-homeSensor.git"
   },
+
   "bugs": {
     "url": "https://github.com/dauden/homebridge-homeSensor/issues"
   },
   "engines": {
     "node": ">=0.12.0",
     "homebridge": ">=0.2.0"
-  },
-  "dependencies": {
-    "node-dht-sensor": "^0.3.0"
   }
 }
