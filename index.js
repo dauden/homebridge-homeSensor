@@ -1,5 +1,5 @@
-const sensor = require('node-dht-sensor');
-const SENOR_TYPE = 22;
+const sensor = require('node-dht-sensor').promises;
+const SENOR_TYPE = 11;
 const GPIO_PIN = 17
 let Service, Characteristic;
 
@@ -13,9 +13,12 @@ class HomeSenor {
   constructor(log, config) {
     this.log = log;
     this.name = config.name;
-    this.gpioPin = Number( config["gpio_pin"] || GPIO_PIN );
-    this.sensorType = Number( config["sensor_type"] || SENOR_TYPE );
-    this.currentTemperature = 22;
+    this.serviceName = config.service.replace(/\s/g, '');
+    this.characteristics = config.characteristics.replace(/\s/g, '');
+    this.valueProperty = config.valueProperty.replace(/\s/g, '');
+    this.gpioPin = Number( config["gpioPin"] || GPIO_PIN );
+    this.sensorType = Number( config["sensorType"] || SENOR_TYPE );
+    this.currentValue = 0;
   }
 
   identify(callback) {
@@ -34,33 +37,73 @@ class HomeSenor {
 
   getReading(callback) {
     let sefl = this;
-    sensor.read(this.sensorType, this.gpioPin, (err, temperature) => {
-      callback();
-      if (err) {
-        console.error(err); // eslint-disable-line no-console
+    sensor.read(this.sensorType, this.gpioPin).then(
+      resp => {
+        callback();
+        sefl.log("currentValue:", resp[this.valueProperty]);
+        this.currentValue = resp[this.valueProperty];
+        this.mservice.setCharacteristic(this.characteristics, this.currentValue);
+      },
+      err => {
+        sefl.error('Failed to read sensor data:', err);
         return;
       }
-      sefl.log("currentTemperature:", temperature)
-      this.currentTemperature = temperature;
-      this.temperatureService.setCharacteristic(Characteristic.CurrentTemperature, temperature);
-    });
+    );
   }
 
   getServices() {
     const informationService = new Service.AccessoryInformation();
 
     informationService
-      .setCharacteristic(Characteristic.Manufacturer, 'Encore Dev Labs')
-      .setCharacteristic(Characteristic.Model, 'Pi Temperature Sensor')
-      .setCharacteristic(Characteristic.SerialNumber, 'Raspberry Pi');
-
-    this.temperatureService = new Service.TemperatureSensor(this.name);
-    this.temperatureService
-      .getCharacteristic(Characteristic.CurrentTemperature)
+      .setCharacteristic(Characteristic.Manufacturer, 'BackBean Dev Labs')
+      .setCharacteristic(Characteristic.Model, 'HomeSenor Sensor')
+      .setCharacteristic(Characteristic.SerialNumber, 'Raspberry Pi, NodeMCU, gpio');
+    
+    switch (this.serviceName) {
+      case "AirQualitySensor": 
+        this.mservice = new Service.AirQualitySensor(this.name); 
+        break;
+      case "CarbonDioxideSensor": 
+        this.mservice = new Service.CarbonDioxideSensor(this.name); 
+        break;
+      case "CarbonMonoxideSensor": 
+        this.mservice = new Service.CarbonMonoxideSensor(this.name); 
+        break;
+      case "ContactSensor": 
+        this.mservice = new Service.ContactSensor(this.name); 
+        break;
+      case "HumiditySensor": 
+        this.mservice = new Service.HumiditySensor(this.name); 
+        break;
+      case "LeakSensor": 
+        this.mservice = new Service.LeakSensor(this.name); 
+        break;
+      case "LightSensor": 
+        this.mservice = new Service.LightSensor(this.name); 
+        break;
+      case "MotionSensor": 
+        this.mservice = new Service.MotionSensor(this.name); 
+        break;
+      case "OccupancySensor": 
+        this.mservice = new Service.OccupancySensor(this.name); 
+        break;
+      case "SmokeSensor": 
+        this.mservice = new Service.SmokeSensor(this.name); 
+        break;
+      case "TemperatureSensor": 
+        this.mservice = new Service.TemperatureSensor(this.name); 
+        break;
+      default: 
+        this.mservice = null;  
+        this.log("HomeSenor: service not available yet!");
+    }
+    
+    this.mservice
+      .getCharacteristic(this.characteristics)
       .on('get', (callback) => {
-        callback(null, this.currentTemperature);
+        callback(null, this.currentValue);
       });
-    this.temperatureService
+    this.mservice
       .getCharacteristic(Characteristic.Name)
       .on('get', callback => {
         callback(null, this.name);
@@ -68,6 +111,6 @@ class HomeSenor {
 
     this.startReading();
 
-    return [informationService, this.temperatureService];
+    return [informationService, this.mservice];
   }
 }
