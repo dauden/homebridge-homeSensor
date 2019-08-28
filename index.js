@@ -98,6 +98,8 @@ class HomeSenor {
         this.log("HomeSenor: service not available yet!");
     }
     
+    sefl.log(this.characteristics,this.currentValue);
+    
     this.mservice
       .getCharacteristic(this.characteristics)
       .on('get', (callback) => {
