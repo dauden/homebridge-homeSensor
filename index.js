@@ -42,7 +42,7 @@ class HomeSenor {
         callback();
         sefl.log("currentValue:", resp);
         this.currentValue = resp[this.valueProperty];
-        this.mservice.setCharacteristic(this.characteristics, this.currentValue);
+        this.mservice.getCharacteristic(Characteristic[this.characteristics]).updateValue(this.currentValue, null);
       },
       err => {
         sefl.error('Failed to read sensor data:', err);
