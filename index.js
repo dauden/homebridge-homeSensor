@@ -38,7 +38,7 @@ class HomeSenor {
         console.error(err); // eslint-disable-line no-console
         return;
       }
-
+      this.log("currentTemperature:", temperature)
       this.currentTemperature = temperature;
       this.temperatureService.setCharacteristic(Characteristic.CurrentTemperature, this.currentTemperature);
     });
