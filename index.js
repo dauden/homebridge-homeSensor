@@ -104,6 +104,11 @@ class HomeSenor {
         callback(null, this.currentValue);
       });
     this.mservice
+      .getCharacteristic(this.characteristics)
+      .on('set', (callback) => {
+        callback(null, this.currentValue);
+      });
+    this.mservice
       .getCharacteristic(Characteristic.Name)
       .on('get', callback => {
         callback(null, this.name);
