@@ -37,12 +37,16 @@ HomeSenor.prototype.updateState = function (state) {
 
   this.waitingResponse = true;
   this.lastValue = sensor.read(this.sensorType, this.gpioPin).then(
-    function ({ temperature, humidity }) {
-      console.log('temp: ' + temperature.toFixed(1) + '°C, ' +
-          'humidity: ' + humidity.toFixed(1) + '%'
-      );
-      this.mservice.getCharacteristic('temperature').updateValue(temperature.toFixed(1), null);
-      this.mservice.getCharacteristic('humidity').updateValue(humidity.toFixed(1), null);
+    function (resp) {
+      for (let item in this.characteristics) {
+        let charac = resp[item].replace(/\s/g, '');
+        if(resp.hasOwnProperty(charac)){
+          console.log('temp: ' + resp[charac].toFixed(1));
+          this.mservice.getCharacteristic(charac).updateValue(resp[charac].toFixed(1), null);
+        }
+        else
+          this.log("HomeSenor: " + charac + " has no information");
+      }
       this.waitingResponse = false;
     },
     function (err) {
@@ -192,6 +196,7 @@ HomeSenor.prototype.getServices = function () {
         this.listener[index] = charcHelper(charac);
         
         this.mservice.getCharacteristic(Characteristic[charac]).on('get', this.listener[index].getState.bind(this)); 
+        this.mservice.getCharacteristic(Characteristic[charac]).on('set', this.listener[index].getState.bind(this)); 
       }
       else {
         this.log("homebridge: " + this.characteristics[index] + " is invalid");
@@ -203,7 +208,7 @@ HomeSenor.prototype.getServices = function () {
     this.log("homebridge: please set characteristics field in config file");
   
   if (this.updateInterval > 0) {
-    //this.timer = setInterval(this.updateState.bind(this), this.updateInterval);
+    this.timer = setInterval(this.updateState.bind(this), this.updateInterval);
   }
   
   function charcHelper(name){
