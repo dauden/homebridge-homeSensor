@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git@github.com:dauden/homebridge-homeSensor.git"
   },
+  
   "bugs": {
     "url": "https://github.com/dauden/homebridge-homeSensor/issues"
   },

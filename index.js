@@ -7,7 +7,6 @@ const DEF_UNITS = "ppm";
 const DEF_TIMEOUT = 5000;
 const DEF_INTERVAL = 120000;  // in milisecond
 
-
 module.exports = function (homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
@@ -42,13 +41,16 @@ HomeSenor.prototype.updateState = function (state) {
       console.log('temp: ' + temperature.toFixed(1) + '°C, ' +
           'humidity: ' + humidity.toFixed(1) + '%'
       );
-      this.mservice.getCharacteristic('Temperature').updateValue(temperature.toFixed(1), null);
-      this.mservice.getCharacteristic('Humidity').updateValue(humidity.toFixed(1), null);
+      this.mservice.getCharacteristic('temperature').updateValue(temperature.toFixed(1), null);
+      this.mservice.getCharacteristic('humidity').updateValue(humidity.toFixed(1), null);
+      this.waitingResponse = false;
     },
     function (err) {
+        this.waitingResponse = false;
         console.error('Failed to read sensor data:', err);
     }
-);
+  );
+}
 
 HomeSenor.prototype.getServices = function () {
   this.informationService = new Service.AccessoryInformation();
@@ -189,8 +191,7 @@ HomeSenor.prototype.getServices = function () {
       if(Characteristic.hasOwnProperty(charac)){
         this.listener[index] = charcHelper(charac);
         
-        this.mservice.getCharacteristic(Characteristic[charac]).on('get', this.listener[index].getState.bind(this));
-        this.mservice.getCharacteristic(Characteristic[charac]).on('set', this.listener[index].setState.bind(this));    
+        this.mservice.getCharacteristic(Characteristic[charac]).on('get', this.listener[index].getState.bind(this)); 
       }
       else {
         this.log("homebridge: " + this.characteristics[index] + " is invalid");
