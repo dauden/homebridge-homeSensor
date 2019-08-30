@@ -1,0 +1,45 @@
+{
+  "bridge": {
+    "name": "BlackBean Home",
+    "username": "CC:21:3D:E3:EE:30",
+    "port": 51826,
+    "pin": "190-81-982"
+  },
+ 
+  "accessories": [
+  	{ 
+  		"accessory":    "HomeSenor",
+  	  "name":         "Living Temperature",
+   	  "service":	"TemperatureSensor",
+  	  "characteristics": "CurrentTemperature",
+      "valueProperty": "temperature",
+  		"sensorType": 11
+  	},
+  	{ 
+  		"accessory":    "HomeSenor",
+  	  "name":         "Living Humidity",
+   	  "service":	"HumiditySensor",
+  	  "characteristics": "CurrentHumidity",
+      "valueProperty": "humidity",
+  		"sensorType": 11
+  	}
+  ],
+  "platforms": [
+    {
+      "platform": "Camera-ffmpeg",
+      "cameras": [
+        {
+          "name": "Living Room",
+          "videoConfig": {
+              "source": "-f v4l2 -r 30 -s 1280x720 -i /dev/video0",
+              "maxStreams": 2,
+              "maxWidth": 1280,
+              "maxHeight": 720,
+              "maxFPS": 30,
+              "vcodec": "h264_omx"
+          }
+        }
+      ]
+   }
+  ]
+}

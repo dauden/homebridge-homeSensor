@@ -29,7 +29,7 @@ class HomeSenor {
   startReading() {
     let sefl = this;
     const callback = () => {
-      setTimeout(() => this.getReading(callback), 5000);
+      setTimeout(() => this.getReading(callback), 300000);
     };
 
     this.getReading(callback);
@@ -97,8 +97,6 @@ class HomeSenor {
         this.mservice = null;  
         this.log("HomeSenor: service not available yet!");
     }
-    
-    this.log(this.characteristics,this.currentValue);
 
     this.mservice
       .getCharacteristic(Characteristic[this.characteristics])
